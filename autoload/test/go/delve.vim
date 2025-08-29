@@ -17,10 +17,12 @@ function! test#go#delve#build_position(type, position) abort
     elseif a:type ==# 'nearest'
       let name = s:nearest_test(a:position)
 
-      let contains_ginkgo_import = (search('github.com/onsi/ginkgo', 'n') > 0)
-      
-      if contains_ginkgo_import
-        return empty(name) ? [] : [path, '--', '-ginkgo.focus='.shellescape(name, 1)]
+      echom "Nearest test: ".name
+
+      let contains_testify_suite_import = (search('github.com/stretchr/testify/suite', 'n') > 0)
+
+      if contains_testify_suite_import
+        return empty(name) ? [] : [path, '--', '-testify.m '.shellescape(name, 1)]
       else
         return empty(name) ? [] : [path, '--', '-test.run '.shellescape(name.'$', 1)]
       end
@@ -55,17 +57,10 @@ function! test#go#delve#build_args(args) abort
 endfunction
 
 function! test#go#delve#executable() abort
-  return 'dlv test'
+  return 'dlv test --check-go-version=false'
 endfunction
 
 function! s:nearest_test(position) abort
-  let contains_ginkgo_import = (search('github.com/onsi/ginkgo', 'n') > 0)
-
-  if contains_ginkgo_import
-    let name = test#base#nearest_test(a:position, g:test#go#ginkgo#patterns)
-    return join(name['test'])
-  else
-    let name = test#base#nearest_test(a:position, g:test#go#patterns)
-    return join(name['test'])
-  endif
+  let name = test#base#nearest_test(a:position, g:test#go#patterns)
+  return join(name['test'])
 endfunction
