@@ -7,7 +7,7 @@ function! test#javascript#vitest#test_file(file) abort
       if exists('g:test#javascript#runner')
           return g:test#javascript#runner ==# 'vitest'
       else
-        return test#javascript#has_package('vitest')
+        return test#javascript#has_import(a:file, 'vitest') || test#javascript#has_package('vitest')
       endif
   endif
 endfunction
@@ -18,9 +18,9 @@ function! test#javascript#vitest#build_position(type, position) abort
     if !empty(name)
       let name = '-t '.shellescape(escape(name, '()[]'), 1)
     endif
-    return ['run', name, a:position['file']]
+    return ['run', name, shellescape(a:position['file'])]
   elseif a:type ==# 'file'
-    return ['run', a:position['file']]
+    return ['run', shellescape(a:position['file'])]
   else
     return ['run']
   endif
