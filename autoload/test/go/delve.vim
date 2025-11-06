@@ -64,7 +64,7 @@ function! test#go#delve#build_args(args) abort
 endfunction
 
 function! test#go#delve#executable() abort
-  return 'dlv test'
+  return 'dlv test --check-go-version=false'
 endfunction
 
 function! s:nearest_test(position) abort
